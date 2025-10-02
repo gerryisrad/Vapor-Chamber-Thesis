@@ -6,7 +6,7 @@
 
 ## 📝 Abstract
 
-This repository contains the complete research materials for the Master's thesis titled "\[Vapor Chamber Wick Analysis]". The project focuses on the design, simulation, and experimental validation of a high-performance, wick-based vapor chamber for electronics cooling applications. This repository includes all associated CAD models, simulation code, experimental procedures, raw data, and research notes.
+This repository contains the complete research materials for my masters Thesis on Vapor Chambers. The project focuses on the design, simulation, and experimental validation of a high-performance, wick-based vapor chamber for electronics cooling applications. This repository includes all associated CAD models, simulation code, experimental procedures, raw data, and research notes.
 
 
 
@@ -54,7 +54,7 @@ The `Experiment/` directory contains all information related to the physical tes
 ### Procedure
 1.  **Assembly:** Ensure consistent mounting pressure and uniform application of thermal interface material between the VC and the heater/cooler blocks.
 2.  **Vacuum & Charging:** Evacuate the chamber to a target pressure of <10 Pa using an HVAC Vacuum pump. Charge with the calculated volume of deionized water using a precision syringe.
-3.  **Testing:** Apply power to the heater in 10W increments, allowing the system to reach steady-state at each interval. Log temperature data continuously at 1 Hz.
+3.  **Testing:** Apply power to the heater in 10W increments, allowing the system to reach steady-state at each interval. Log temperature data continuously at steady intervals.
 4.  **Data Collection:** All raw experimental data is stored in the `Experiment/Data/` sub-folder in `.csv` format.
 
 ---

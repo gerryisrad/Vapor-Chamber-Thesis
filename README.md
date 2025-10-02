@@ -6,7 +6,7 @@
 
 ## 📝 Abstract
 
-This repository contains the complete research materials for the Master's thesis titled "\[Your Thesis Title Here]". The project focuses on the design, simulation, and experimental validation of a high-performance, wick-based vapor chamber for electronics cooling applications. This repository includes all associated CAD models, simulation code, experimental procedures, raw data, and research notes.
+This repository contains the complete research materials for the Master's thesis titled "\[Vapor Chamber Wick Analysis]". The project focuses on the design, simulation, and experimental validation of a high-performance, wick-based vapor chamber for electronics cooling applications. This repository includes all associated CAD models, simulation code, experimental procedures, raw data, and research notes.
 
 
 

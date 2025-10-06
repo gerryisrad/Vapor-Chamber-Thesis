@@ -4,7 +4,7 @@
 
 
 
-## 📝 Abstract
+##  Abstract
 
 This repository contains the complete research materials for my masters Thesis on Vapor Chambers. The project focuses on the design, simulation, and experimental validation of a high-performance, wick-based vapor chamber for electronics cooling applications. This repository includes all associated CAD models, simulation code, experimental procedures, raw data, and research notes.
 
@@ -29,7 +29,7 @@ This project is organized into the following directories:
 ├── Notes
 
 ---
-## 📐 CAD Files
+##  CAD Files
 The `CAD/` directory contains the 3D models for all mechanical components of the vapor chamber and experimental test fixture.
 
 * **Software Used:** Solidworks 2024
@@ -58,7 +58,7 @@ The `Experiment/` directory contains all information related to the physical tes
 4.  **Data Collection:** All raw experimental data is stored in the `Experiment/Data/` sub-folder in `.csv` format.
 
 ---
-## 💻 MATLAB Simulation Code
+##  MATLAB Simulation Code
 The `Code/` directory contains the 1D analytical model used for design and performance prediction.
 
 * **File:** `VaporChamberCalcs1D.m`
@@ -70,7 +70,7 @@ The `Code/` directory contains the 1D analytical model used for design and perfo
     4. Results will be displayed in the command window.
 
 ---
-## 📓 Project Notes
+##  Project Notes
 The `Notes/` directory serves as the research log for this project. It includes:
 * Weekly progress reports.
 * A literature review with summaries of key papers.

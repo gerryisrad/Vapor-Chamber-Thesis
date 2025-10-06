@@ -2,3 +2,6 @@ This document is created to evaluate the performance of my experimental vapor ch
 
 
 The first of these metrics is the **capillary heat transport limit ($Q_{max}$)**, which defines the maximum heat transfer rate that the VC can achieve before capillary (wick) limitations begin to cause failure during operation. This is typically attributed to a wick's inability to return sufficient liquid to the evaporator section of the VC, thereby failing to match the actual evaporation rate of the liquid under vacuum.
+<!--stackedit_data:
+eyJoaXN0b3J5IjpbMTQwMDU0MDkyNl19
+-->

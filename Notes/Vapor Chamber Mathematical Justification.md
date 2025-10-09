@@ -18,3 +18,4 @@ This section is dedicated to defining physical parameters and user-inputted vari
 ### Fabrication and Experimental Parameters
 The following parameters pertain to the physical design of the VC prototype.
 1. FR (Filling Ratio) is the liquid filling ratio (water). This is a ratio based on the volume of the fluid over the volume of the void space (vapor space + wick pore volume). This is an important parameter that affects the dry-out potential of the VC or increases thermal resistance. Too little fluid will cause early dryout, while too much liquid causes increased thermal resistance and obstructs vapor flow. This number has been set to 30% based on my literature review.
+2. $P_{vac}$ (Target Vacuum)

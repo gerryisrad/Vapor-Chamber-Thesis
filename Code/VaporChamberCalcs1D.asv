@@ -115,8 +115,8 @@ dP_cap = (2 * sigma * cosd(theta)) / rc_eff; % Capillary head (driving pressure)
 dP_l_cond = (mu_l * Q_in * (L_eff/2)) / (rho_l * A_wick_cond * K_cond * h_fg); % Liquid viscous loss (condenser)
 dP_l_evap = (mu_l * Q_in * (L_eff/2)) / (rho_l * A_wick_evap * K_evap * h_fg); % Liquid viscous loss (evaporator)
 dP_l = dP_l_cond + dP_l_evap; % Total liquid viscous loss
-%C_vapor = 16; % Assumed f*Re constant for laminar vapor flow for pipe
-C_vapor = 96; % Assumed f*Re constant for laminar vapor flow for two flat plates
+%C_vapor = 16; % Assumed f*Re constant for laminar vapor flow
+C_vapor = 16; % Assumed f*Re constant for laminar vapor flow
 dP_v = (C_vapor * mu_v * Q_in * L_eff) / (rho_v * A_vapor * d_h_vapor^2 * h_fg); % Vapor viscous loss
 g = 9.81;
 dP_g = rho_l * g * L_eff * sind(phi); % Gravitational head
@@ -134,8 +134,8 @@ Q_max = (dP_cap - dP_g) / ...
 
 % --- Effective Wick Conductivity (k_wick) ---
 % Perpendicular heat flow model for mesh screens.
-k_wick_evap = k_l * ((k_shell + k_l - (1-epsilon_evap)*(k_shell-k_l)) / (k_shell + k_l - (1-epsilon_evap)*(k_shell-k_l)));
-k_wick_cond = k_l * ((k_shell + k_l - (1-epsilon_cond)*(k_shell-k_l)) / (k_shell + k_l - (1-epsilon_cond)*(k_shell-k_l)));
+k_wick_evap = k_shell * ((k_shell + k_l - (1-epsilon_evap)*(k_shell-k_l)) / (k_shell + k_l + (1-epsilon_evap)*(k_shell-k_l)));
+k_wick_cond = k_shell * ((k_shell + k_l - (1-epsilon_cond)*(k_shell-k_l)) / (k_shell + k_l + (1-epsilon_cond)*(k_shell-k_l)));
 
 % --- Component Thermal Resistances [K/W] ---
 R_evap_wall = t_evap_wall / (k_shell * A_evap);

@@ -1,8 +1,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Vapor Chamber 1D Analytical Model for Thesis Research
 %
-% Author: Gerardo Gutierrez
-% Date: 2025-09-28
+% Author: Gerardo Silvestre Gutierrez
+% Date: 2025-10-11
 %
 % Description:
 % This script implements a steady-state, 1D analytical model to evaluate
@@ -98,7 +98,8 @@ liquid_charge_volume_mL = (vol_internal_total * filling_ratio) * 1e6; % Required
 
 % --- Cross-Sectional Areas for Flow Calculation ---
 A_evap = evap_length * evap_width;
-A_cond = vc_length * vc_width;
+% A_cond = vc_length * vc_width;
+A_cond = (vc_length * vc_width) - A_evap; % finer calculation
 A_wick_evap = t_evap_wick * vc_width;
 A_wick_cond = t_cond_wick * vc_width;
 A_vapor = t_vapor * vc_width;
@@ -115,27 +116,26 @@ dP_cap = (2 * sigma * cosd(theta)) / rc_eff; % Capillary head (driving pressure)
 dP_l_cond = (mu_l * Q_in * (L_eff/2)) / (rho_l * A_wick_cond * K_cond * h_fg); % Liquid viscous loss (condenser)
 dP_l_evap = (mu_l * Q_in * (L_eff/2)) / (rho_l * A_wick_evap * K_evap * h_fg); % Liquid viscous loss (evaporator)
 dP_l = dP_l_cond + dP_l_evap; % Total liquid viscous loss
-%C_vapor = 16; % Assumed f*Re constant for laminar vapor flow
-C_vapor = 16; % Assumed f*Re constant for laminar vapor flow
-dP_v = (C_vapor * mu_v * Q_in * L_eff) / (rho_v * A_vapor * d_h_vapor^2 * h_fg); % Vapor viscous loss
+%C_vapor = 16; % Assumed f*Re constant for laminar vapor flow for pipe
+C_vapor = 96; % Assumed f*Re constant for laminar vapor flow for two flat plates
+dP_v = (C_vapor * mu_v * Q_in * L_eff) / (2 * rho_v * A_vapor * d_h_vapor^2 * h_fg); % Vapor viscous loss
 g = 9.81;
 dP_g = rho_l * g * L_eff * sind(phi); % Gravitational head
 dP_total = dP_l + dP_v + dP_g; % Total pressure losses
 
 % --- Maximum Heat Flux (Q_max) Calculation ---
 % Rearranging the pressure balance equation to solve for Q at the limit.
-Q_max = (dP_cap - dP_g) / ...
-        ( (mu_l*(L_eff/2))/(rho_l*A_wick_cond*K_cond*h_fg) + ...
-          (mu_l*(L_eff/2))/(rho_l*A_wick_evap*K_evap*h_fg) + ...
-          (C_vapor*mu_v*L_eff)/(rho_v*A_vapor*d_h_vapor^2*h_fg) );
-
+vapor_pressure_term = (C_vapor*mu_v*L_eff)/(2*rho_v*A_vapor*d_h_vapor^2*h_fg);
+liquid_pressure_term = (mu_l*(L_eff/2))/(rho_l*A_wick_cond*K_cond*h_fg) + ...
+                       (mu_l*(L_eff/2))/(rho_l*A_wick_evap*K_evap*h_fg);
+Q_max = (dP_cap - dP_g) / (liquid_pressure_term + vapor_pressure_term);
 %% ============== 5. THERMAL RESISTANCE NETWORK ANALYSIS ================
 % Model VC as a 1D series thermal resistance network.
 
 % --- Effective Wick Conductivity (k_wick) ---
 % Perpendicular heat flow model for mesh screens.
-k_wick_evap = k_shell * ((k_shell + k_l - (1-epsilon_evap)*(k_shell-k_l)) / (k_shell + k_l + (1-epsilon_evap)*(k_shell-k_l)));
-k_wick_cond = k_shell * ((k_shell + k_l - (1-epsilon_cond)*(k_shell-k_l)) / (k_shell + k_l + (1-epsilon_cond)*(k_shell-k_l)));
+k_wick_evap = k_l * ((k_shell + k_l + (1-epsilon_evap)*(k_shell-k_l)) / (k_shell + k_l - (1-epsilon_evap)*(k_shell-k_l)));
+k_wick_cond = k_l * ((k_shell + k_l + (1-epsilon_cond)*(k_shell-k_l)) / (k_shell + k_l - (1-epsilon_cond)*(k_shell-k_l)));
 
 % --- Component Thermal Resistances [K/W] ---
 R_evap_wall = t_evap_wall / (k_shell * A_evap);

@@ -20,4 +20,6 @@ The following parameters pertain to the physical design of the VC prototype.
 1. FR (Filling Ratio) is the liquid filling ratio (water). This is a ratio based on the volume of the fluid over the volume of the void space (vapor space + wick pore volume). This is an important parameter that affects the dry-out potential of the VC or increases thermal resistance. Too little fluid will cause early dryout, while too much liquid causes increased thermal resistance and obstructs vapor flow. This number has been set to 30% based on my literature review.
 2. $P_{vac}$ (Target Vacuum) is the vacuum goal for the VC. We need to evacuate any non-condensable gases that would detrimentally degrade the condensation and performance of the VC. The hope is <10Pa to make sure the working fluid (water) is the most prominent.
 ### VC Geometry and Material Properties
-
+This section defines the physical dimensions and material of the VC. 
+- $vc_{length}$ and $vc_{width}$ ((m)eters) are the width and length of the vapor chamber. For this project, the length and width are identical to make a square
+- $t_{vapor}$ and $t_{wall}$ are the thicknesses of the solid walls of the vapor chamber. These are critical for understanding thermal resistance in our VC network. Use a unifrom thickness for this script

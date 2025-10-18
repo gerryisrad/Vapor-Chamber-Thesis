@@ -22,4 +22,9 @@ The following parameters pertain to the physical design of the VC prototype.
 ### VC Geometry and Material Properties
 This section defines the physical dimensions and material of the VC. 
 - $vc_{length}$ and $vc_{width}$ ((m)eters) are the width and length of the vapor chamber. For this project, the length and width are identical to make a square
-- $t_{vapor}$ and $t_{wall}$ are the thicknesses of the solid walls of the vapor chamber. These are critical for understanding thermal resistance in our VC network. Use a unifrom thickness for this script
+- $t_{vapor}$ and $t_{wall}$ are the thicknesses of the solid walls of the vapor chamber. These are critical for understanding thermal resistance in our VC network. Use a uniform thickness for this script.
+- $k_{shell}$ (Shell Thermal Conductivity) is the thermal conductivity value for the vapor chamber walls. In this case, the properties of C11000 copper were used.
+- Wick Specifications were defined as follows
+  - $d_{w}$ (Mesh number) is the wire count per unit length, which determines the capillary pore radius ($r_{app}$) and therefore the total capillary pressure. As you can see, a higher mesh number yields a smaller pore size and more pumping capability.
+  - $d_{w}$ (Wire Diameter) is used in conjunction with the mesh number to calculate the porosity and permeability of the mesh.
+  - $n_{layers}$ (Number of Layers) is the total thickness of the wick as you stack layers. This helps determine the vapor core dimensions when designing. This, of course, also defines the cross-sectional area for liquid flow ($A_{wick}$), which reduces the liquid pressure drop ($\Delta P_{l}$). This is most helpful when designing for specific wick types and hybrid wick approaches.

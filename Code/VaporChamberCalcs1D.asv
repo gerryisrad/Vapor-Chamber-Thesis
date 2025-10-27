@@ -81,7 +81,7 @@ t_evap_wick = 2 * d_w_evap * num_layers_evap;
 t_cond_wick = 2 * d_w_cond * num_layers_cond;
 
 % --- Vapor Core Thickness ---
-t_vapor = t_int_tot - t_evap_wick - t_cond_wick; % Vapor Core Thicnkess [m] (empty space)
+t_vapor = t_; % Vapor Core Thicnkess [m] (empty space)
 
 % --- Screen Mesh Wick Characterization ---
 % Standard correlations for porosity, capillary radius, and permeability.

@@ -9,7 +9,7 @@ This model will serve as a foundation for the initial design of the vapor chambe
 It is divided into two main analytical sections: 
 - The first is an analysis of the pressure balance to determine the operational limits of the wick structure. This is important as it verifies if the pumping done by the vapor chamber will function correctly under the given heat load and frictional forces. 
 - The second is a thermal resistance circuit analysis to predict the temperature drop across the entire VC.
-## 1.1 Model Configuration and Inputs
+## 1 Model Configuration and Inputs
 This section is dedicated to defining physical parameters and user-inputted variables, such as wick density.
 ### Boundary Conditions & Operational Parameters
 1. $T_{op}$ (Operational Temperature, K) is defined by the user as the operating temperature of the vapor chamber and the working fluid inside the VC.
@@ -27,4 +27,19 @@ This section defines the physical dimensions and material of the VC.
 - Wick Specifications were defined as follows
   - $d_{w}$ (Mesh number) is the wire count per unit length, which determines the capillary pore radius ($r_{app}$) and therefore the total capillary pressure. As you can see, a higher mesh number yields a smaller pore size and more pumping capability.
   - $d_{w}$ (Wire Diameter) is used in conjunction with the mesh number to calculate the porosity and permeability of the mesh.
-  - $n_{layers}$ (Number of Layers) is the total thickness of the wick as you stack layers. This helps determine the vapor core dimensions when designing. This, of course, also defines the cross-sectional area for liquid flow ($A_{wick}$), which reduces the liquid pressure drop ($\Delta P_{l}$). This is most helpful when designing for specific wick types and hybrid wick approaches.
+  - $n_{layers}$ (Number of Layers) is the total thickness of the wick as you stack layers. This helps determine the vapor core dimensions during the design process. This, of course, also defines the cross-sectional area for liquid flow ($A_{wick}$), which reduces the liquid pressure drop ($\Delta P_{l}$). This is most helpful when designing for specific wick types and hybrid wick approaches.
+
+## 2 Thermophysical Properties
+This section defines the thermophysical properties of the working fluid that will be used in the experimental setup for this VC. The working fluid for this VC is deionized water, which is non-conductive and suitable for use at the operating temperature $T_{op}$. These were taken from the steam charts as known values. You could interpolate them from a function if needed, but for a rough model like this, it didn't make sense for me to do so.
+### Fluid Density and Viscosity
+- $\rho_{l}$ (liquid density) is the density of the liquid phase of the working fluid. We use this for mass flow rate and gravitational head.
+- $\rho_{v}$ (vapor density) is the density of the vapor phase of the working fluid. This will be used later to calculate the pressure drop in the vapor core, where the phase change occurs.
+- $\mu_{l}$ (dynamic viscosity of liquid) is the viscosity of the liquid. This affects the pressure drop in the wic and the capillary pumping effect.
+- $\mu_{v}$ (dynamic viscosity of vapor) is the viscosity of the vapor. Used to find the Reynolds number in the flow resistance equation.
+### Surface and Thermal Properties
+- $\sigma$ (Surface tension) is the surface tension of the mesh wick. This is the property that really determines the capillary pressure ($\Delta P_{cap}$) in the mesh wick, which drives the fluid circulation via capillary action. A higher surface tension value would increase the pumping capacity of the mesh
+- $h_{fg}$ (Latent Heat) is the energy that is required to vaporize the liquid. To solve for dry-outthe mass flwo rate equation $\left(\dot{m} = \frac{Q_{in}}{h_{fg}}\right)$
+- $k_{l}$ (Thermal Conductivity of Liquid) is the thermal conductivity of the liquid phase of the medium. This influences the effective thermal resistance in the wick and heat transfer rates during evaporation and condensation
+### Wetting Properties
+- $\theta$ (Contact Angle (Degrees)) is the angle of the VC where a flat ground is zero. More specifically, it is the angle between the liquid and the wick surface. 0 degrees is assumed for this VC setup. Angles don't seem to affect ultra-thin VCs.
+## Derived Parameter Calculation

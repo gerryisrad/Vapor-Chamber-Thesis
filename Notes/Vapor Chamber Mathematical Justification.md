@@ -52,5 +52,8 @@ This small but crucial part of section 3 converts units for consistency in mesh 
 ### Wick Thickness
 The wick thickness calculation approximates the wick thickness based on the wire diameter and layering.
 - $t_{evap_{wick}} = 2*d_{w_{evap}}*num_{layers_{evap}}$ (Evaporator Wick Thickness, m) estimates the total thickness as twice the wire diameter per layer by the number of total layers.
-- $t_{cond_{wick}} = 2*d_{w_{cond}}*num_{layers_{cond}}$ (Condenser Wick Thickness, m) same as before but for condenser side.
+- $t_{cond_{wick}} = 2*d_{w_{cond}}*num_{layers_{cond}}$ (Condenser Wick Thickness, m) same as before, but for condenser side.
 ### Vapor Core 
+- $t_{vapor}$ describes the empty (vapor) space between the two mesh wicks. This is the empty space where vapor can spread. It's a difference of the taken space (by the wick) and the total space inside the vapor cavity.
+- $\epsilon_{evap} = 1 - \frac{1.05*\pi*mesh_{number_{evap}}*d_{w_{evap}}}{4}$ (Evaporator Porosity) is a modified form of the mesh porosity equation with a 1.05 factor accounts for crimping in woven meshes, derived from empirical correlations. [Zhao, Zenghui & Peles, Yoav & Jensen, M.K.. (2013). Properties of plain weave metallic wire mesh screens. International Journal of Heat and Mass Transfer. 57. 690-697. 10.1016/j.ijheatmasstransfer.2012.10.055.](https://www.researchgate.net/publication/275192568_Properties_of_plain_weave_metallic_wire_mesh_screens)
+- $\epsilon_{cond} = 1 - \frac{1.05*\pi*mesh_{number_{cond}}*d_{w_{cond}}}{4}$ (Condenser Porosity) is the same as the equation before but for the condenser side

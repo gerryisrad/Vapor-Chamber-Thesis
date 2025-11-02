@@ -13,7 +13,7 @@ It is divided into two main analytical sections:
 This section is dedicated to defining physical parameters and user-inputted variables, such as wick density.
 ### Boundary Conditions & Operational Parameters
 1. $T_{op}$ (Operational Temperature, K) is defined by the user as the operating temperature of the vapor chamber and the working fluid inside the VC.
-2. $Q_{in}$ (Input Heat Load, W) is the heat load inputted at the evaporator. Think of this as the heat input we are trying to dissipate. This will come from an ASIC, CPU, or GPU die. This is used to calculate the required fluid flow rate and resulting pressure drops throughout the VC system.
+2. $Q_{in}$ (Input Heat Load, W) is the heat load inputted at the evaporator. Please think of this as the heat input we are trying to dissipate. This will come from an ASIC, CPU, or GPU die. This is used to calculate the required fluid flow rate and resulting pressure drops throughout the VC system.
 3. $\phi$ (Inclination Angle, Degrees) is the orientation of the VC with respect to the pull of gravity. Used to calculate the gravitational head ${\Delta}P_{g}$ that the wicks have to overcome in pumping (capillary action).
 ### Fabrication and Experimental Parameters
 The following parameters pertain to the physical design of the VC prototype.
@@ -43,3 +43,14 @@ This section defines the thermophysical properties of the working fluid that wil
 ### Wetting Properties
 - $\theta$ (Contact Angle (Degrees)) is the angle of the VC where a flat ground is zero. More specifically, it is the angle between the liquid and the wick surface. 0 degrees is assumed for this VC setup. Angles don't seem to affect ultra-thin VCs.
 ## Derived Parameter Calculation
+This section computes the majority of the wick characteristics and VC-specific calculations based on the values defined in the previous two sections. Additionally, flow areas, volumes, and hydraulic properties are calculated in order to model the VC performance. The calculations in this section enable the prediction of pressure drips, capillary limits, and overall heat transfer efficiency.
+### Unit Conversions
+This small but crucial part of section 3 converts units for consistency in mesh parameters. I converted to SI from imperial as it's easier for me to think in SI units :P.
+- $in_{to_{m}}$ = 0.0254; A standard conversion factor used for our wires per inch (wpi) conversions.
+- $mesh_{number_{evap}} = \frac{mesh_{number_{evap_{wpi}}}}{in_{to_{m}}}$ (Evaporator Mesh Number, wires/m) converts the evap wick mesh density to metric units. This affects pore size and capillary action calculations.
+- $mesh_{number_{cond}} = \frac{mesh_{number_{cond_{wpi}}}}{in_{to_{m}}}$ (Condenser Mesh Number, wires/m) performs the same conversion for the condensor wick. The rest of this section will follow a similar flow where twin equations are calculated to differentiate the condenser wick and the evaporator wick.
+### Wick Thickness
+The wick thickness calculation approximates the wick thickness based on the wire diameter and layering.
+- $t_{evap_{wick}} = 2*d_{w_{evap}}*num_{layers_{evap}}$ (Evaporator Wick Thickness, m) estimates the total thickness as twice the wire diameter per layer by the number of total layers.
+- $t_{cond_{wick}} = 2*d_{w_{cond}}*num_{layers_{cond}}$ (Condenser Wick Thickness, m) same as before but for condenser side.
+### Vapor Core 

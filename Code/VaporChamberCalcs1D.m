@@ -15,6 +15,12 @@
 
 clear; clc; close all;
 
+%% =================== 05.Wick Types for Cond and Evap ===================
+
+Evap_Wick_Number = input("Input Evaporator Wick Number (80/200): ");
+
+Cond_Wick_Number = input("Input Condensor Wick Number (80/200): ");
+
 %% =================== 1. MODEL CONFIGURATION & INPUTS ===================
 % All units are SI unless otherwise specified.
 
@@ -47,15 +53,29 @@ evap_width  = 0.020;  % Evaporator area width [m]
 % --- Material Properties ---
 k_shell = 380;        % Thermal conductivity of copper shell [W/m-K]
 
-% --- Evaporator Wick Specification (Screen Mesh) ---
-mesh_number_evap_wpi = 200;  % Mesh count [wires/inch]
-d_w_evap = 0.000051;         % Wire diameter [m]
-num_layers_evap = 5;        % Number of layers in the stack
+if Evap_Wick_Number == 200
+    % --- Evaporator Wick Specification (Screen Mesh) 200 ---
+    mesh_number_evap_wpi = 200;  % Mesh count [wires/inch]
+    d_w_evap = 0.000051;         % Wire diameter [m]
+    num_layers_evap = 5;        % Number of layers in the stack
+elseif Evap_Wick_Number == 80
+    % --- Evaporator Wick Specification (Screen Mesh) 80 ---
+    mesh_number_evap_wpi = 80;  % Mesh count [wires/inch]
+    d_w_evap = 0.00015;         % Wire diameter [m]
+    num_layers_evap = 5;        % Number of layers in the stack
+end
 
-% --- Condenser Wick Specification (Screen Mesh) ---
-mesh_number_cond_wpi = 80;   % Mesh count [wires/inch]
-d_w_cond = 0.00015;          % Wire diameter [m]
-num_layers_cond = 5;        % Number of layers in the stack
+if Cond_Wick_Number == 200
+    % --- Condenser Wick Specification (Screen Mesh) 200 ---
+    mesh_number_cond_wpi = 200;   % Mesh count [wires/inch]
+    d_w_cond = 0.000051;          % Wire diameter [m]
+    num_layers_cond = 5;        % Number of layers in the stack
+elseif Cond_Wick_Number == 80    
+    % --- Condenser Wick Specification (Screen Mesh) 80 ---
+    mesh_number_cond_wpi = 80;   % Mesh count [wires/inch]
+    d_w_cond = 0.00015;          % Wire diameter [m]
+    num_layers_cond = 5;        % Number of layers in the stack
+end
 
 %% =================== 2. THERMOPHYSICAL PROPERTIES ======================
 % Working Fluid: Deionized Water at T_op.

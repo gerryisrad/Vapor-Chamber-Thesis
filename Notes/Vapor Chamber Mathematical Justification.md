@@ -60,6 +60,25 @@ The wick thickness calculation approximates the wick thickness based on the wire
 - $r_{c_{eff}} = \frac{1}{2*mesh_{number_{evap}}}$ (Effective Capillary Radius, m) approximates the pore radius as half the mesh opening width. A validation check makes sure $r_{c_{eff}} > 0$ to avoid having fake results.
 - $K_{evap} = \frac{d_{w_{evap}}^{2}\epsilon_{evap}^{3}}{122(1-\epsilon_{evap}^{2})}$ (Evaporator Permeability, $m^{2}$) uses the Kozeny-Carman equation to determine the permeability of the mesh. The 122 constant is used from a paper. [Davoud Jafari, Wessel W. Wits, Bernard J. Geurts, Metal 3D-printed wick structures for heat pipe application: Capillary performance analysis, Applied Thermal Engineering, Volume 143,2018,Pages 403-414,](https://www.sciencedirect.com/science/article/pii/S1359431118322981)
 - $K_{cond} = \frac{d_{w_{cond}}^{2}\epsilon_{cond}^{3}}{122(1-\epsilon_{cond}^{2})}$ (Condenser Permeability, $m^{2}$) is solved for the same reason as the last equation. [Davoud Jafari, Wessel W. Wits, Bernard J. Geurts, Metal 3D-printed wick structures for heat pipe application: Capillary performance analysis, Applied Thermal Engineering, Volume 143,2018,Pages 403-414,](https://www.sciencedirect.com/science/article/pii/S1359431118322981)
-### Characteristic FLow Lengths and Volumes
--
+### Characteristic Flow Lengths and Volumes
+This section determines the internal volumes for filling and performance modeling.
+- $L_{eff} = \frac{vc_{length}}{2}$ (Effective Length, m) is the distance between the evaporator and condenser that the fluid travels through. This is used for pressure drop simplifications
+- $internal_{area} = vc_{length}vc_{width}$ (Internal Cross-Sectional Area, $m^{2}$) is the area inside the vc that is then used for volume calculation.
+- $vol_{vapor_{space}} = internal_{area}t_{vapor}$ (Vapor Space Volume, $m^{3}$) empty volume between evap wick and cond wick
+- $vol_{evap_{wick_{pore}}} = internal_{area} t_{evap_{wick}} \epsilon_{evap}$ (Evaporator Wick Pore Volume, $m^{3}$) is the liquid-holding-space of the evaporator wick pores 
+- $vol_{cond_{wick_{pore}}} = internal_{area} t_{cond_{wick}} \epsilon_{cond}$ (Condenser Wick Pore Volume, $m^{3}$) same as previous line but for condenser
+- $vol_{internal_{total}} = vol_{vapor_{space}} + vol_{evap_{wick_{pore}}} + vol_{cond_{wick_{pore}}}$ (Tootla Internal Volume, $m^{3}$) sums all internal "void space"
+- $liquid_{charge_{volume_{mL}}} = (vol_{internal_{total}} filling_{ratio}) \times 10^6$ (Liquid Charge Volume, mL) determines the volume that the working fluid would take
+### Cross-Sectional Areas for Flow Calculation
+Defining areas for flow rate and pressure drop equations, assuming radial and axial flow paths
+- $A_{evap} = evap_{length} \times evap_{width}$ (Evaporator Area, $m^{2}$) Defines the area of the evaporator input side
+- $A_{cond} = vc_{length} \times vc_{width}$ (Condenser Area, $m^{2}$) Defines the area of the condensor side. Since the heat is being dissipated by the entire copper area, we use that size
+- $perimeter_{evap} = 2 \times (evap_{length} + evap_{width})$(Evaporator Perimeter, m) is the boundary for radial flow.
+- $perimeter_{cond} = 2 \times (vc_{length} + vc_{width})$ (Condenser Perimeter, m) is the boundary for the radial flow
+- $A_{wick_{evap_{radial}}} = t_{evap_{wick}} \times perimeter_{evap}$ (Evaporator Wick Radial Cross-Sectional Area, $m^{2}$) is the area that liquid can flow in the radial direction
+- $A_{wick_{cond_{radial}}} = t_{cond_{wick}} \times perimeter_{cond}$ (Condenser Wick Radial Cross-Sectional Area, $m^{2}$) same as evap
+- $A_{vapor} = t_{vapor} \times vc_{width}$ (Vapor Flow Cross-Sectional Area, $m^{2}$) is used for vapor transport
+### Hydraulic Diameter of Vapor Core
+- $d_{h_{vapor}} = \frac{2 \times t_{vapor} \times vc_{width}}{t_{vapor} + vc_{width}}$ (Vapor Core Hydraulic Diameter, m) calcautes the effective vapor flow in non-circular channels, used for reynolds number $\left( Re = \frac{\rho_{v}vd_{h}}{\mu_{v}} \right)$ and friciton factor corrleations for $\Delta P_{v}$
+## 4 Capillary Performance Analysis
 

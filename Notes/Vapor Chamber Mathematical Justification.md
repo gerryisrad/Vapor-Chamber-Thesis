@@ -88,7 +88,14 @@ These terms are used to compute the pressure contributions from each component/c
 - $L_{flow_{evap}} = \frac{evap_{length}}{4}$ (Evaporator Flow Length, m) The radial distance that liquid travels in the evaporator wick from edge to approximate center. A circular flow is easier to use here. (Fagahri Cite)
 - $L_{flow_{cond}} = \sqrt{\left(\frac{vc_{length}}{2}\right)^2 + \left(\frac{vc_{width}}{2}\right)^2} - \sqrt{\left(\frac{evap_{length}}{2}\right)^2 + \left(\frac{evap_{width}}{2}\right)^2}$ (Condenser Flow Length, m) Same idea as evaporator side but for the whole VC internal size.
 - $\Delta P_{l_{evap}} = \frac{\mu_l Q_{in} L_{flow_{evap}}}{\rho_l A_{wick_{evap_{radial}}} K_{evap} h_{fg}}$ (Evaporator Liquid Pressure Drop, Pa)is used to estimate the losses due to viscous liquid in the vaporator wick using Darcy's law for porous media flow. This is one of the pressure portions that the capillary head has to overcome (link to Darcy)
-- $\Delta P_{l_{cond}} = \frac{\mu_l Q_{in} L_{flow_{cond}}}{\rho_l A_{wick_{cond_{radial}}} K_{cond} h_{fg}}$ (Condenser Liquid Pressure Drop, Pa) Same formula bto for condensor
-- $\Delta P_l = \Delta P_{l_{cond}} + \Delta P_{l_{evap}}$ (Total Liquid Pressure Drop, Pa)
-- $AR_{vapor} = \frac{vc_{width}}{t_{vapor}}$ (Vapor Core Aspect Ratio, dimensionless)
-- $AR_{use} = \max(AR_{vapor}, 1/AR_{vapor})$ (Adjusted Aspect Ratio, dimensionless)
+- $\Delta P_{l_{cond}} = \frac{\mu_l Q_{in} L_{flow_{cond}}}{\rho_l A_{wick_{cond_{radial}}} K_{cond} h_{fg}}$ (Condenser Liquid Pressure Drop, Pa) Same formula but for the condensor
+- $\Delta P_l = \Delta P_{l_{cond}} + \Delta P_{l_{evap}}$ (Total Liquid Pressure Drop, Pa) Sums the losses due to the evap and condenser.
+- $AR_{vapor} = \frac{vc_{width}}{t_{vapor}}$ (Vapor Core Aspect Ratio, dimensionless) Width to height ratio of the vapor "channel". This is used when using an empirical friction correlation for non-circular ducts.
+- $AR_{use} = \max(AR_{vapor}, 1/AR_{vapor})$ (Adjusted Aspect Ratio, dimensionless) ensures aspect ratio conformity.
+- $C_{vapor}$ (Vapor Friction Constant, dimensionless) is determined based on $AR_{use}$:
+   - If $AR_{use} > 10$, $C_{vapor} = 24$ (parallel plates approximation).
+   - Otherwise, $C_{vapor} = 24 \left(1 - \frac{1.3553}{AR_{use}} + \frac{1.9467}{AR_{use}^2} - \frac{1.7012}{AR_{use}^3} + \frac{0.9564}{AR_{use}^4} - \frac{0.2537}{AR_{use}^5}\right)$.
+   This polynomial is an exact solution for fully developed laminar flow in rectangular ducts, used in the friction factor $f$
+## 5 Thermal Resistance Network Analysis
+
+### Effective Wick Conductivity

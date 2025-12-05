@@ -97,5 +97,8 @@ These terms are used to compute the pressure contributions from each component/c
    - Otherwise, $C_{vapor} = 24 \left(1 - \frac{1.3553}{AR_{use}} + \frac{1.9467}{AR_{use}^2} - \frac{1.7012}{AR_{use}^3} + \frac{0.9564}{AR_{use}^4} - \frac{0.2537}{AR_{use}^5}\right)$.
    This polynomial is an exact solution for fully developed laminar flow in rectangular ducts, used in the friction factor $f$
 ## 5 Thermal Resistance Network Analysis
-
+This section models the vapor chamber as a 1D thermal resistance network to estimate the total thermal performance of the VC. We sum the individual resistances (conduction, phase change, and vapor transport), and the model predicts the temperature drop across the VC for a given heat load $Q_{in}$. This is a huge simplification from a 3d model. Formulas are based on heat transfer principles and the literature on heat pipes. 
 ### Effective Wick Conductivity
+The *effective* thermal conductivity of the wick accounts for the wick structure and its porosity when filled with water.
+- $k_{wick_{evap}} = \epsilon_{evap} k_l + (1 - \epsilon_{evap}) k_{shell}$ (Evaporator Wick Effective Conductivity, W/m·K) (Heat Pipe Science and Technology Faghri eqn 3.30)
+- $k_{wick_{cond}} = \epsilon_{cond} k_l + (1 - \epsilon_{cond}) k_{shell}$ (Condenser Wick Effective Conductivity, W/m·K) (Heat Pipe Science and Technology Faghri eqn 3.30)

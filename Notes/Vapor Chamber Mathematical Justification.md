@@ -102,3 +102,13 @@ This section models the vapor chamber as a 1D thermal resistance network to esti
 The *effective* thermal conductivity of the wick accounts for the wick structure and its porosity when filled with water.
 - $k_{wick_{evap}} = \epsilon_{evap} k_l + (1 - \epsilon_{evap}) k_{shell}$ (Evaporator Wick Effective Conductivity, W/m·K) (Heat Pipe Science and Technology Faghri eqn 3.30)
 - $k_{wick_{cond}} = \epsilon_{cond} k_l + (1 - \epsilon_{cond}) k_{shell}$ (Condenser Wick Effective Conductivity, W/m·K) (Heat Pipe Science and Technology Faghri eqn 3.30)
+### Vapor Core Resistance
+The following variables are used to calculate the temperature drops due to vapor pressure variations
+- $T_{sat_{Pa}} = 31164$ (Saturation Pressure at 70°C, Pa) Known constant derived from table
+- $v_{fg} = \frac{1}{\rho_v} - \frac{1}{\rho_l}$ (Specific Volume Change, m³/kg) [Thermodynamics, an Engineering Approach]
+- $\frac{dT}{dP} = \frac{T_{op} v_{fg}}{h_{fg}}$ (Temperature-Pressure Derivative, K/Pa) Clapeyron Equation [Thermodynamics, an Engineering Approach]
+### Component Thermal Resistances
+These calculations determine individual resistances in the network, focusing on conduction through walls and wicks, as well as phase change at interfaces.
+- $R_{evap_{wall}} = \frac{t_{evap_{wall}}}{k_{shell} A_{evap}}$ (Evaporator Wall Resistance, K/W)
+- $R_{evap_{wick}} = \frac{t_{evap_{wick}}}{k_{wick_{evap}} A_{evap}}$ (Evaporator Wick Resistance, K/W)
+- $\sigma_{evap} = 0.1$ (Evaporation Accommodation Coefficient, dimensionless)

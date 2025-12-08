@@ -2,7 +2,7 @@
 % Vapor Chamber 1D Analytical Model for Thesis Research
 %
 % Author: Gerardo Silvestre Gutierrez
-% Date: 2025-10-11
+% Date: 2025-12-07
 %
 % Description:
 % This script implements a steady-state, 1D analytical model to evaluate
@@ -17,9 +17,9 @@ clear; clc; close all;
 
 %% =================== 05.Wick Types for Cond and Evap ===================
 
-Evap_Wick_Number = input("Input Evaporator Wick Number (80/200): ");
+Evap_Wick_Number = 200;%input("Input Evaporator Wick Number (80/200): ");
 
-Cond_Wick_Number = input("Input Condensor Wick Number (80/200): ");
+Cond_Wick_Number = 200;%input("Input Condensor Wick Number (80/200): ");
 
 %% =================== 1. MODEL CONFIGURATION & INPUTS ===================
 % All units are SI unless otherwise specified.
@@ -31,24 +31,30 @@ phi = 0;              % Operational angle [deg] (0=horizontal)
 
 % --- Fabrication & Experimental Parameters ---
 filling_ratio = 0.30; % Target liquid filling ratio (FR) V_l/V_int
-target_vacuum_Pa = 10;% Target pre-seal vacuum level [Pa] for NCG removal
+%target_vacuum_Pa = 10;% Target pre-seal vacuum level [Pa] for NCG removal
 
 % --- Model Calibration ---
 experimental_correction_factor = 1.2; % Correction factor to align R_th with empirical data
 
 % --- VC Envelope Geometry ---
-vc_length = 0.070;    % Overall VC length [m]
-vc_width  = 0.070;    % Overall VC width [m]
+vc_length = 0.090;    % Overall VC length [m]
+vc_width  = 0.090;    % Overall VC width [m]
 
 % --- Internal Component Geometry ---
-t_evap_wall = 0.00225;% Evaporator wall thickness [m]
-t_cond_wall = 0.00225;% Condenser wall thickness [m]
+t_evap_wall = 0.0009;% Evaporator wall thickness [m]
+t_cond_wall = 0.0009;% Condenser wall thickness [m]
 % t_vapor     = 0.00192;% Vapor core thickness [m]
-t_int_tot   = 0.00357;% Vapor internal total thickness [m] 
+t_int_tot = 0.003;% Vapor internal total thickness [m]
+
+% --- Wick Size --- 
+evap_width = vc_width - 2*t_evap_wall;
+evap_length = vc_length - 2*t_evap_wall;
+cond_width = vc_width - 2*t_cond_wall;
+cond_length = vc_length - 2*t_cond_wall;
 
 % --- Heat Source Definition ---
-evap_length = 0.020;  % Evaporator area length [m]
-evap_width  = 0.020;  % Evaporator area width [m]
+ heatsource_length = 0.020;  % Evaporator area length [m]
+ heatsource_width  = 0.020;  % Evaporator area width [m]
 
 % --- Material Properties ---
 k_shell = 380;        % Thermal conductivity of copper shell [W/m-K]
@@ -57,24 +63,24 @@ if Evap_Wick_Number == 200
     % --- Evaporator Wick Specification (Screen Mesh) 200 ---
     mesh_number_evap_wpi = 200;  % Mesh count [wires/inch]
     d_w_evap = 0.000051;         % Wire diameter [m]
-    num_layers_evap = 5;        % Number of layers in the stack
+    num_layers_evap = 3;        % Number of layers in the stack
 elseif Evap_Wick_Number == 80
     % --- Evaporator Wick Specification (Screen Mesh) 80 ---
     mesh_number_evap_wpi = 80;  % Mesh count [wires/inch]
     d_w_evap = 0.00015;         % Wire diameter [m]
-    num_layers_evap = 5;        % Number of layers in the stack
+    num_layers_evap = 3;        % Number of layers in the stack
 end
 
 if Cond_Wick_Number == 200
     % --- Condenser Wick Specification (Screen Mesh) 200 ---
     mesh_number_cond_wpi = 200;   % Mesh count [wires/inch]
     d_w_cond = 0.000051;          % Wire diameter [m]
-    num_layers_cond = 5;        % Number of layers in the stack
+    num_layers_cond = 3;        % Number of layers in the stack
 elseif Cond_Wick_Number == 80    
     % --- Condenser Wick Specification (Screen Mesh) 80 ---
     mesh_number_cond_wpi = 80;   % Mesh count [wires/inch]
     d_w_cond = 0.00015;          % Wire diameter [m]
-    num_layers_cond = 5;        % Number of layers in the stack
+    num_layers_cond = 3;        % Number of layers in the stack
 end
 
 %% =================== 2. THERMOPHYSICAL PROPERTIES ======================
@@ -82,7 +88,7 @@ end
 % Properties sourced from standard steam tables for the specified T_op.
 rho_l = 977.77;       % Liquid density [kg/m^3]
 rho_v = 0.198;        % Vapor density [kg/m^3]
-mu_l = 4.047e-4;      % Liquid dynamic viscosity [Pa-s]
+mu_l = 4.047e-4;      % Liquid dynamic viscosity [Pa-s] 
 mu_v = 1.10e-5;       % Vapor dynamic viscosity [Pa-s]
 sigma = 0.0642;       % Surface tension [N/m]
 h_fg = 2.338e6;       % Latent heat of vaporization [J/kg]
@@ -105,8 +111,8 @@ t_vapor = t_int_tot - t_evap_wick - t_cond_wick; % Vapor Core Thicnkess [m] (emp
 
 % --- Screen Mesh Wick Characterization ---
 % Standard correlations for porosity, capillary radius, and permeability.
-epsilon_evap = 1 - (1.05 * pi * mesh_number_evap * d_w_evap) / 4; % Added weave factor for porosity (Blake)
-epsilon_cond = 1 - (1.05 * pi * mesh_number_cond * d_w_cond) / 4; % Added weave factor for porosity (Blake)
+epsilon_evap = .59;%1 - (1.05 * pi * mesh_number_evap * d_w_evap) / 4; % Added weave factor for porosity (Blake)
+epsilon_cond = .59;%1 - (1.05 * pi * mesh_number_cond * d_w_cond) / 4; % Added weave factor for porosity (Blake)
 
 rc_eff = 1 / (2 * mesh_number_evap); % Effective capillary radius [m], standard for screen mesh
 
@@ -120,7 +126,7 @@ K_cond = (d_w_cond^2 * epsilon_cond^3) / (122 * (1-epsilon_cond)^2); % Permeabil
 
 % --- Characteristic Flow Length & Volumes ---
 L_eff = vc_length / 2; % Effective length approximation for VCs. Reworked for center die spread
-internal_area = vc_length * vc_width;
+internal_area = evap_length * evap_width;
 vol_vapor_space = internal_area * t_vapor;
 vol_evap_wick_pore = internal_area * t_evap_wick * epsilon_evap;
 vol_cond_wick_pore = internal_area * t_cond_wick * epsilon_cond;
@@ -130,8 +136,8 @@ liquid_charge_volume_mL = (vol_internal_total * filling_ratio) * 1e6; % Required
 % --- Cross-Sectional Areas for Flow Calculation ---
 A_evap = evap_length * evap_width;
 % A_cond = vc_length * vc_width;
-A_cond = vc_length * vc_width; % Full condenser area [m²]
-perimeter_evap = 2 * (evap_length + evap_width);  % All four sides
+A_cond = cond_length * cond_width; % Full condenser area [m²]
+perimeter_evap = 2 * (heatsource_length + heatsource_width);  % All four sides
 perimeter_cond = 2 * (vc_length + vc_width);
 A_wick_evap_radial = t_evap_wick * perimeter_evap; % Radial
 A_wick_cond_radial = t_cond_wick * perimeter_cond;
@@ -147,8 +153,8 @@ d_h_vapor = (2 * t_vapor * vc_width) / (t_vapor + vc_width);
 % --- Pressure Terms Calculation [Pa] ---
 dP_cap = (2 * sigma * cosd(theta)) / rc_eff; % Capillary head (driving pressure)
 
-L_flow_evap = evap_length / 4; % Average radial flow distance
-L_flow_cond = sqrt((vc_length/2)^2 + (vc_width/2)^2) - sqrt((evap_length/2)^2 + (evap_width/2)^2);
+L_flow_evap = 0.035;%vc_length / 4; % Average radial flow distance
+L_flow_cond = 0.035; %vc_length / 4;%sqrt((vc_length/2)^2 + (vc_width/2)^2) - sqrt((evap_length/2)^2 + (evap_width/2)^2);
 
 dP_l_evap = (mu_l * Q_in * L_flow_evap) / (rho_l * A_wick_evap_radial * K_evap * h_fg); % fixed
 dP_l_cond = (mu_l * Q_in * L_flow_cond) / (rho_l * A_wick_cond_radial * K_cond * h_fg);
@@ -187,7 +193,7 @@ k_wick_evap = epsilon_evap * k_l + (1 - epsilon_evap) * k_shell; % Parallel mode
 k_wick_cond = epsilon_cond * k_l + (1 - epsilon_cond) * k_shell; % Parallel model
 
 % --- Vapor Core Resistance ---
-T_sat_Pa = 31164; % Saturation pressure at 70°C [Pa]
+T_sat_Pa = 31201; % Saturation pressure at 70°C [Pa]
 v_fg = (1/rho_v) - (1/rho_l); % Specific volume change
 dT_dP = (T_op * v_fg) / h_fg; % Clausius-Clapeyron approximation [K/Pa]
 
@@ -213,7 +219,7 @@ R_cond_wall = t_cond_wall / (k_shell * A_cond);
 R_ideal = R_evap_wall + R_evap_wick + R_phase_change + R_vapor + R_cond_wick + R_cond_wall; % Renamed for consistency
 
 % Spreading resistance in evaporator wall (approximation for finite source on infinite plate)
-a = evap_length / 2; % Half-length of square evaporator [m]
+a = vc_length / 2; % Half-length of square evaporator [m]
 t = t_evap_wall; % Wall thickness [m]
 k = k_shell; % Wall conductivity [W/m-K]
 R_spread_evap = (1 / (pi * k * a)) * (log(2 * a / t) + 0.5); % [K/W], simplified Lee model
@@ -243,7 +249,7 @@ fprintf('Effective Capillary Radius: %.2f μm\n\n', rc_eff * 1e6);
 fprintf('--- FABRICATION TARGETS ---\n');
 fprintf('Target Filling Ratio: %.0f %%\n', filling_ratio*100);
 fprintf('Required Liquid Charge Volume: %.4f mL\n', liquid_charge_volume_mL);
-fprintf('Target Initial Vacuum: %.2f Pa\n\n', target_vacuum_Pa);
+%fprintf('Target Initial Vacuum: %.2f Pa\n\n', target_vacuum_Pa);
 
 fprintf('--- ANALYSIS CONDITIONS ---\n');
 fprintf('Operating Temperature: %.1f °C\n', T_op - 273.15);
@@ -278,7 +284,7 @@ end
 
 fprintf('Maximum Heat Transport (Q_max): %.1f W\n', Q_max);
 fprintf('Ideal Thermal Resistance (R_ideal): %.4f K/W\n', R_ideal);
-fprintf('Corrected Thermal Resistance (R_corrected): %.4f K/W\n', R_total_corrected);
+fprintf('Corrected Thermal Resistance (R_corrected): %.4f K/W\n', R_corrected);
 
 delta_T = Q_in * R_total_corrected;
 fprintf('Predicted Corrected Temp. Drop (ΔT): %.2f °C\n\n', delta_T);

@@ -25,7 +25,7 @@ Cond_Wick_Number = 200;%input("Input Condensor Wick Number (80/200): ");
 % All units are SI unless otherwise specified.
 
 % --- Boundary Conditions & Operational Parameters ---
-T_op = 70 + 273.15;   % Design-point operating temperature [K]
+T_op = 130 + 273.15;   % Design-point operating temperature [K]
 Q_in = 150;           % Target heat load for analysis [W]
 phi = 0;              % Operational angle [deg] (0=horizontal)
 
@@ -37,8 +37,8 @@ filling_ratio = 0.30; % Target liquid filling ratio (FR) V_l/V_int
 experimental_correction_factor = 1.2; % Correction factor to align R_th with empirical data
 
 % --- VC Envelope Geometry ---
-vc_length = 0.090;    % Overall VC length [m]
-vc_width  = 0.090;    % Overall VC width [m]
+vc_length = 0.106;    % Overall VC length [m]
+vc_width  = 0.070;    % Overall VC width [m]
 
 % --- Internal Component Geometry ---
 t_evap_wall = 0.0009;% Evaporator wall thickness [m]
@@ -53,8 +53,8 @@ cond_width = vc_width - 2*t_cond_wall;
 cond_length = vc_length - 2*t_cond_wall;
 
 % --- Heat Source Definition ---
- heatsource_length = 0.020;  % Evaporator area length [m]
- heatsource_width  = 0.020;  % Evaporator area width [m]
+ heatsource_length = 0.0525;  % CPU area length [m]
+ heatsource_width  = 0.0525;  % CPU area width [m]
 
 % --- Material Properties ---
 k_shell = 380;        % Thermal conductivity of copper shell [W/m-K]
@@ -153,8 +153,8 @@ d_h_vapor = (2 * t_vapor * vc_width) / (t_vapor + vc_width);
 % --- Pressure Terms Calculation [Pa] ---
 dP_cap = (2 * sigma * cosd(theta)) / rc_eff; % Capillary head (driving pressure)
 
-L_flow_evap = 0.035;%vc_length / 4; % Average radial flow distance
-L_flow_cond = 0.035; %vc_length / 4;%sqrt((vc_length/2)^2 + (vc_width/2)^2) - sqrt((evap_length/2)^2 + (evap_width/2)^2);
+L_flow_evap = 0.01875;%vc_length / 4; % Average radial flow distance
+L_flow_cond = 0.01875; %vc_length / 4;%sqrt((vc_length/2)^2 + (vc_width/2)^2) - sqrt((evap_length/2)^2 + (evap_width/2)^2);
 
 dP_l_evap = (mu_l * Q_in * L_flow_evap) / (rho_l * A_wick_evap_radial * K_evap * h_fg); % fixed
 dP_l_cond = (mu_l * Q_in * L_flow_cond) / (rho_l * A_wick_cond_radial * K_cond * h_fg);
@@ -202,7 +202,7 @@ R_evap_wall = t_evap_wall / (k_shell * A_evap);
 R_evap_wick = t_evap_wick / (k_wick_evap * A_evap);
 
 % sigma_evap = 1.0; % Accommodation coefficient for water (conservative)
-sigma_evap = 0.1; % Accommodation coefficient for water (realistic average for copper surfaces)
+sigma_evap = 01; % Accommodation coefficient for water (realistic average for copper surfaces)
 M_water = 0.018; % Molar mass of water [kg/mol]
 R_gas = 8314; % Universal gas constant [J/(mol·K)]
 R_evap_interface = (T_op * sqrt(2 * pi * R_gas / M_water)) / (2 * sigma_evap * h_fg^2 * rho_v * A_evap);
@@ -219,20 +219,25 @@ R_cond_wall = t_cond_wall / (k_shell * A_cond);
 R_ideal = R_evap_wall + R_evap_wick + R_phase_change + R_vapor + R_cond_wick + R_cond_wall; % Renamed for consistency
 
 % Spreading resistance in evaporator wall (approximation for finite source on infinite plate)
-a = vc_length / 2; % Half-length of square evaporator [m]
-t = t_evap_wall; % Wall thickness [m]
-k = k_shell; % Wall conductivity [W/m-K]
-R_spread_evap = (1 / (pi * k * a)) * (log(2 * a / t) + 0.5); % [K/W], simplified Lee model
+r2 = sqrt((vc_width*vc_length)/2);
+r1 = sqrt((heatsource_width*heatsource_length)/2);
+eps = r1/r2;
+tau = t_evap_wall/r2;
+heff = 1400;
+Bi = (heff*r2)/k_shell;
+lambda = pi + 1/(eps*sqrt(pi));
+% Phi formula
+numerator = tanh(lambda * tau) + (lambda / Bi);
+denominator = 1 + (lambda / Bi) * tanh(lambda * tau);
+phi = numerator / denominator;
+psi_max = (eps * tau) / sqrt(pi) + (1 / sqrt(pi)) * (1 - eps) * phi;
+R_spread_evap = psi_max / (k_shell * r1 * sqrt(pi));
 
-% Similarly for condenser (symmetric, but often smaller; approximate as half for balance)
-R_spread_cond = R_spread_evap / 2; % Conservative estimate
+% Spreading Resistance of Condenser
+R_spread_cond = 0; % Isothermal
 
 % Add to ideal resistance instead of multiplying (no further empirical factor)
 R_corrected = R_ideal + R_spread_evap + R_spread_cond; % Corrected for spreading [K/W]
-
-% --- Corrected Thermal Resistance ---
-% Applying calibration factor to account for non-ideal experimental conditions.
-R_total_corrected = R_ideal * experimental_correction_factor;
 
 %% =================== 6. RESULTS SUMMARY ================================
 fprintf('====================================================\n');
@@ -265,13 +270,14 @@ fprintf('    • Condenser (dP_l_cond):       %.2f Pa\n', dP_l_cond);
 fprintf('  - Vapor Drop (dP_v):             %.2f Pa\n', dP_v);
 fprintf('  - Gravity Drop (dP_g):           %.2f Pa\n', dP_g);
 
-fprintf('\n--- THERMAL RESISTANCE BREAKDOWN ---\n');
-fprintf('R_evap_wall:      %.5f K/W (%.1f%%)\n', R_evap_wall, R_evap_wall/R_ideal*100);
-fprintf('R_evap_wick:      %.5f K/W (%.1f%%)\n', R_evap_wick, R_evap_wick/R_ideal*100);
-fprintf('R_phase_change:   %.5f K/W (%.1f%%)\n', R_phase_change, R_phase_change/R_ideal*100);
-fprintf('R_vapor:          %.5f K/W (%.1f%%)\n', R_vapor, R_vapor/R_ideal*100);
-fprintf('R_cond_wick:      %.5f K/W (%.1f%%)\n', R_cond_wick, R_cond_wick/R_ideal*100);
-fprintf('R_cond_wall:      %.5f K/W (%.1f%%)\n', R_cond_wall, R_cond_wall/R_ideal*100);
+% fprintf('\n--- THERMAL RESISTANCE BREAKDOWN ---\n');
+% fprintf('R_evap_wall:      %.5f K/W (%.1f%%)\n', R_evap_wall, R_evap_wall/R_ideal*100);
+% fprintf('R_evap_wick:      %.5f K/W (%.1f%%)\n', R_evap_wick, R_evap_wick/R_ideal*100);
+% fprintf('R_phase_change:   %.5f K/W (%.1f%%)\n', R_phase_change, R_phase_change/R_ideal*100);
+% fprintf('R_vapor:          %.5f K/W (%.1f%%)\n', R_vapor, R_vapor/R_ideal*100);
+% fprintf('R_cond_wick:      %.5f K/W (%.1f%%)\n', R_cond_wick, R_cond_wick/R_ideal*100);
+% fprintf('R_cond_wall:      %.5f K/W (%.1f%%)\n', R_cond_wall, R_cond_wall/R_ideal*100);
+
 
 fprintf('\n--- PREDICTED PERFORMANCE METRICS ---\n');
 if dP_cap >= dP_total
@@ -286,5 +292,5 @@ fprintf('Maximum Heat Transport (Q_max): %.1f W\n', Q_max);
 fprintf('Ideal Thermal Resistance (R_ideal): %.4f K/W\n', R_ideal);
 fprintf('Corrected Thermal Resistance (R_corrected): %.4f K/W\n', R_corrected);
 
-delta_T = Q_in * R_total_corrected;
+delta_T = Q_in * R_ideal;
 fprintf('Predicted Corrected Temp. Drop (ΔT): %.2f °C\n\n', delta_T);
